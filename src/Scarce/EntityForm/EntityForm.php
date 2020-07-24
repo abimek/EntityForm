@@ -39,46 +39,41 @@ class EntityForm implements JsonSerializable {
     }
 
 
-    public function setTitle(string $title): void {
+    final public function setTitle(string $title): void {
         self::$data["title"] = $title;
     }
 
-    public function getTitle(): string {
+    final public function getTitle(): string {
         return self::$data["title"];
     }
 
-    public function setContent(string $content): void {
+    final public function setContent(string $content): void {
         self::$data["content"] = $content;
     }
 
-    public function getContent(): string {
+    final public function getContent(): string {
         return self::$data["content"] ?? "";
     }
 
-    public function setEntityDamageable(bool $value): void {
+    final public function setEntityDamageable(bool $value): void {
         self::$entity_damageable = $value;
     }
 
-    public function isEntityDamageable(): bool{
+    final public function isEntityDamageable(): bool{
         return self::$entity_damageable;
     }
 
-    public function getEntity(): ?Entity{
+    final public function getEntity(): ?Entity{
         return self::$entity;
     }
 
 
-    public function addButton(Button $button, ?callable $callable = null){
+    final public function addButton(Button $button, ?callable $callable = null){
         self::$buttons[] = $button;
         if ($callable === null){
             return;
         }
         self::$form_listeners[array_key_last(self::$buttons)] = $callable;
-    }
-
-    //Credits To Giant Quartz for this method!
-    public static function linkWithEntity(Entity $entity){
-         self::$entity = $entity;
     }
 
     final public function handleResponse(Player $player, ?int $data){
@@ -99,9 +94,7 @@ class EntityForm implements JsonSerializable {
     //Called When Form is Closed
     public function onClose(Player $player){
     }
-
-    //Called When Form is Opened
-    public function onOpen(Player $player){}
+    
 
 
     final public function jsonSerialize()
