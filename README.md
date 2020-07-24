@@ -1,4 +1,5 @@
 # EntityForm
+//Credits to GiantQuartz for the EntityLinking Idea!
 **EntityForm is a PocketMine-MP plugin that allows plugins to create and managing Npc Forms!**
 
 ### Usage
