@@ -2,11 +2,12 @@
 **EntityForm is a PocketMine-MP plugin that allows plugins to create and managing Npc Forms!**
 
 ### Usage
-You'll first need to import the `Scarce\EntityForm\EntityForm` and `Scarce\EntityForm\EntityFormHandler` class. Those two classes should be the only classes required to create and manage NpcForms.
+You'll first need to import the `Scarce\EntityForm\EntityForm`, `Scarce\EntityForm\EntityFormHandler`, `Scarce\EntityForm\Button` and class. Those three classes should be the only classes required to create and manage NpcForms.
 ```php
 <?php
 use Scarce\EntityForm\EntityForm;
 use Scarce\EntityForm\EntityFormHandler;
+use Scarce\EntityForm\Button;
 ```
 **NOTE:** \
 -You should register the EntitycFormEventHandler so that callables work by using\
@@ -23,46 +24,48 @@ if (!EntityFormHandler::isRegistered()){
 **Creating an EntityForm**\
 Creating a EntityForm is relatively simple.
 You first need to make your own class that extends `Scarce\EntityForm\EntityForm`, in this Example, that class will be called `MyFormClass`! Once you've done that, add the add your constructor by adding the magic function `__construct`. Make sure to not add any parameters in your constructor!\
-Once youve made your constructor, add your parent constructor inside your constructor method by adding `parent::__construct($title, false, false);\
+Once youve made your constructor, add your parent constructor inside your constructor method by adding `parent::__construct($title, false, false);`\
 
-### The first parameter of the parent constructor should be the title of your form, this can always be changed latter on in the constructor.
+The first parameter of the parent constructor should be the title of your form, this can always be changed latter on in the constructor.
 
-### The second parameter of the parent constructor is wether the entity should be damageable, it is recommended that you keep it false because it was incorperated because entity forms dont have damage animations but still can be damaged\
+The second parameter of the parent constructor is wether the entity should be damageable, it is recommended that you keep it false because it was incorperated because entity forms dont have damage animations but still can be damaged\
 
-### The third and final parameter of the parent constructor is wether the form data like buttons should not be kept after server restart. This field is also recommended to be false because it was also built in to fix the bug that happed where form data gets destroyed on server restart!
+The third and final parameter of the parent constructor is wether the form data like buttons should not be kept after server restart. This field is also recommended to be false because it was also built in to fix the bug that happed where form data gets destroyed on server restart!
+
 ```php
 <?php
 
+use pocketmine\utils\TextFormat;
 use Scarce\EntityForm\EntityForm;
 
 class MyFormClass extends EntityForm{
+    
+    public function __construct()
+    {
+        parent::__construct("Quests", false, false);
+    }
 
 }
 ```
+**All these methods are used in the constructor**\
 
-when creating the class, make sure to add the magic function `__construct`. 
-:
-```php
-public function __construc
-```
-
-To set the title of the form(and the NpcEntity) use:
-```php
-/** @var string $title */
-$this->setTitle($title);
-```
-
-You can aslo set the content of the NpcForm by using
+You can aslo set the content of the entity by adding:
 ```php
 /** @var string $content */
 $form->setContent($title);
 ```
-And most importantly, you can add buttons by using:
+
+You can add a button to you form by Adding the folling code in your constructor but make sure to add `use Scarce\EntityForm\Button;` to your use statements! The addButton method takes two parameters, a Button instance, and a callable which will be called when its clicked, if $callable is null, the button press can be detected in the onButtonInteract method:
 ```php
 /** @var string $name */
-$form->addButton($name);
+/** @var ?callable $callable */
+$form->addButton(new Button($buttonname), $callable);
 ```
-It is also possible to get the NPC Entity that corresponds with your Form by using:
+
+**These methods are placed in the constructor**\
+
+
+It is also possible to get the Entity thats Linked with your Form by using:
 ```php
 $form->getEntity();
 ```
