@@ -13,6 +13,7 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntitySpawnEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\server\DataPacketReceiveEvent;
+use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\NpcRequestPacket;
 use pocketmine\Player;
 use pocketmine\Server;
@@ -34,7 +35,7 @@ class EntityFormEventHandler implements Listener{
             if (($entity = Server::getInstance()->findEntity($pk->entityRuntimeId)) === null){
                 return;
             }
-            if (($form = EntityFormHandler::getLinkedEntityForm($entity->getId())) === null){
+            if (($form = EntityFormHandler::getFormFromEntity($entity->getId())) === null){
                 return;
             }
             switch ($pk->requestType){
@@ -48,6 +49,21 @@ class EntityFormEventHandler implements Listener{
                         $form->handleResponse($player, $response);
                         break;
                     }
+            }
+        }
+        if ($pk instanceof InventoryTransactionPacket){
+            $trdata = $pk->trData;
+            if ($pk->transactionType === InventoryTransactionPacket::TYPE_USE_ITEM_ON_ENTITY){
+                $entityid = $trdata->entityRuntimeId;
+                if (($entity = Server::getInstance()->findEntity($entityid)) === null){
+                    return;
+                }
+                if (($form = EntityFormHandler::getFormFromEntity($entity->getId())) === null){
+                    return;
+                }
+                if ($trdata->actionType === InventoryTransactionPacket::USE_ITEM_ON_ENTITY_ACTION_INTERACT){
+                    $form->onOpen($player);
+                }
             }
         }
 
@@ -68,7 +84,7 @@ class EntityFormEventHandler implements Listener{
                 return;
             }
             $form = new $class();
-            if ($form::$is_data_cleared_on_restart === true){
+            if ($form->is_data_cleared_on_restart === true){
                 return;
             }
             EntityFormHandler::linkWithEntity($form, $entity);
@@ -79,10 +95,10 @@ class EntityFormEventHandler implements Listener{
 
     public function onDamage(EntityDamageEvent $event){
         $entity = $event->getEntity();
-        if (($form = EntityFormHandler::getLinkedEntityForm($entity->getId())) === null){
+        if (($form = EntityFormHandler::getFormFromEntity($entity->getId())) === null){
             return;
         }
-        if ($form::$entity_damageable === true){
+        if ($form->isEntityDamageable() === true){
             return;
         }
         $event->setCancelled(true);

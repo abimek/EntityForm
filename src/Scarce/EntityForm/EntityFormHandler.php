@@ -40,21 +40,23 @@ class EntityFormHandler{
         self::$linked_entities[$entity->getId()] = $form;
     }
 
-    public static function getLinkedEntityForm(int $entityid): ?EntityForm{
+    public static function getFormFromEntity(int $entityid): ?EntityForm{
         if (isset(self::$linked_entities[$entityid])){
             return self::$linked_entities[$entityid];
         }
         return null;
     }
 
+
     public static function linkWithEntity(EntityForm $form, Entity $entity){
+        $form->entity = $entity;
         $entity->namedtag->setString(EntityForm::CLASS_LOCATION_NBT, get_class($form));
         $entity->getDataPropertyManager()->setByte(Entity::DATA_HAS_NPC_COMPONENT, true);
         if (isset($form::$data)){
             $entity->setNameTag($form->getTitle());
             $entity->getDataPropertyManager()->setString(Entity::DATA_INTERACTIVE_TAG, $form->getContent());
         }
-        $entity->getDataPropertyManager()->setString(Entity::DATA_NPC_ACTIONS, json_encode(array_map(function ($button){return $button->data;}, $form::$buttons), JSON_UNESCAPED_UNICODE));
+        $entity->getDataPropertyManager()->setString(Entity::DATA_NPC_ACTIONS, json_encode(array_map(function ($button){return $button->data;}, $form->buttons), JSON_UNESCAPED_UNICODE));
         self::registerLinkedEntity($entity, $form);
     }
 

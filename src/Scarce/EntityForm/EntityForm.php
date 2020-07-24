@@ -12,80 +12,92 @@ namespace Scarce\EntityForm;
 use JsonSerializable;
 use pocketmine\entity\Entity;
 use pocketmine\Player;
-use Scarce\EntityForm\Entries\Button;
 
 class EntityForm implements JsonSerializable {
 
+    //Used to store class location in nbt tag
     public const CLASS_LOCATION_NBT = "EntityFormClassLocation";
 
-    public static $data = [];
-    public static $form_listeners = [];
+    private $data = [];
+    private $form_listeners = [];
 
-    private static $entity = null;
-    public static $buttons = [];
+    public $entity = null;
+    public $buttons = [];
 
-    public static $entity_damageable = false;
-    public static $is_data_cleared_on_restart = false;
+    private $entity_damageable = false;
+    public $is_data_cleared_on_restart = false;
 
 
     public function __construct(string $title, bool $entity_damageable = false, bool $clear_data_on_restart = false)
     {
-        self::$data["title"] = "";
-        self::$data["content"] = "";
-        self::$buttons = [];
+        $this->data["title"] = "";
+        $this->data["content"] = "";
+        $this->buttons = [];
         $this->setTitle($title);
         $this->setEntityDamageable($entity_damageable);
-        self::$is_data_cleared_on_restart = $clear_data_on_restart;
+        $this->is_data_cleared_on_restart = $clear_data_on_restart;
     }
 
 
+    //Sets the form title
     final public function setTitle(string $title): void {
-        self::$data["title"] = $title;
+        $this->data["title"] = $title;
     }
 
+    //Returns the form title
     final public function getTitle(): string {
-        return self::$data["title"];
+        return $this->data["title"];
     }
 
+    //Sets the form content
     final public function setContent(string $content): void {
-        self::$data["content"] = $content;
+        $this->data["content"] = $content;
     }
 
+    //Returns the form content
     final public function getContent(): string {
-        return self::$data["content"] ?? "";
+        return $this->data["content"] ?? "";
     }
 
+    //Sets wether the entity can be damaged or not
     final public function setEntityDamageable(bool $value): void {
-        self::$entity_damageable = $value;
+        $this->entity_damageable = $value;
     }
 
+    //returns wether the entity can be damaged or not
     final public function isEntityDamageable(): bool{
-        return self::$entity_damageable;
+        return $this->entity_damageable;
     }
 
+    //returns the entity that this EntityForm is linked with
     final public function getEntity(): ?Entity{
-        return self::$entity;
+        return $this->entity;
     }
 
 
+    //Adds a button to this entity form
     final public function addButton(Button $button, ?callable $callable = null){
-        self::$buttons[] = $button;
+        $this->buttons[] = $button;
         if ($callable === null){
             return;
         }
-        self::$form_listeners[array_key_last(self::$buttons)] = $callable;
+       $this->form_listeners[array_key_last($this->buttons)] = $callable;
     }
 
+    //Handles response recieved from player
     final public function handleResponse(Player $player, ?int $data){
         if ($data === null){
             $this->onClose($player);
         }
-        if (isset(self::$form_listeners[$data])){
-            (self::$form_listeners[$data])($player, self::$buttons[$data], $data);
+        if (isset($this->form_listeners[$data])){
+            ($this->form_listeners[$data])($player, $data);
             return;
         }
-        $this->onButtonInteract($player,self::$buttons[$data], $data);
+        if (isset($this->buttons[$data])){
+            $this->onButtonInteract($player,$this->buttons[$data], $data);
+        }
     }
+
 
     //Should be used for buttons without callables
     public function onButtonInteract(Player $player, Button $button, int $data){
@@ -94,11 +106,15 @@ class EntityForm implements JsonSerializable {
     //Called When Form is Closed
     public function onClose(Player $player){
     }
-    
 
+    //Called When Form is Opend
+    public function onOpen(Player $player){
 
+    }
+
+    //returns form data
     final public function jsonSerialize()
     {
-        return self::$data["buttons"];
+        return array_map(function ($button){return $button->data;}, $this->buttons);
     }
 }

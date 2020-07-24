@@ -28,87 +28,84 @@ Once youve made your constructor, add your parent constructor inside your constr
 
 The first parameter of the parent constructor should be the title of your form, this can always be changed latter on in the constructor.
 
-The second parameter of the parent constructor is wether the entity should be damageable, it is recommended that you keep it false because it was incorperated because entity forms dont have damage animations but still can be damaged\
+The second parameter of the parent constructor is whether the entity should be damageable, it is recommended that you keep it false since it was incorporated because entity forms dont have damage animations but still can be damaged
 
-The third and final parameter of the parent constructor is wether the form data like buttons should not be kept after server restart. This field is also recommended to be false because it was also built in to fix the bug that happed where form data gets destroyed on server restart!
+The third and final parameter of the parent constructor is whether the form data, like buttons, should not be kept after server restart. This field is also recommended to be false because it was also built in to fix the bug that happed where form data gets destroyed on server restart!
 
 ```php
 <?php
 
+use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 use Scarce\EntityForm\EntityForm;
+use Scarce\EntityForm\Button;
+use Scarce\EntityForm\EntityFormHandler;
 
 class MyFormClass extends EntityForm{
-    
+
     public function __construct()
     {
-        parent::__construct("Quests", false, false);
+        parent::__construct(TextFormat::RED . "ElementalsPE", //<--  Title
+            false, //<-- Should the entity corresponding with this form be able to take damages?
+            false);//<-- Should form data like buttons not be saved after restart
+        
+        $this->setContent(TextFormat::RED . "Welcome to ElementalsPe");//Used to set the content of the form Similar to FormAPI
+
+
+        /**the addButton method has two parameters, first being a instance of a button, and second being a callables which will be called when its clicked,
+        If the callable is null, the interaction can still be delt with in onButtonInteract()
+        The callable in these method takes two parameters, $player, and $index*/
+
+        $this->addButton(new Button(TextFormat::LIGHT_PURPLE . "How do I get started"), function(Player $player, int $index){
+            $player->sendMessage(TextFormat::GOLD . "You clicked button $index");
+            $this->getEntity()->setScale(2); //The getEntity method can be used to get the entity that is linked to this form
+
+        });
+
+
+        $this->addButton(new Button(TextFormat::LIGHT_PURPLE . "Server Information"));
+    }
+
+    /** @param Player $player */
+    /**@param Button $button */
+    /**@param Int $data */
+
+    //onButtonInteract allows you to handle buttons which dont have callables associated with them
+    public function onButtonInteract(Player $player, Button $button, int $data)
+    {
+        if ($data === 1) {
+            $player->sendMessage(TextFormat::GREEN . "You Want to see the server information?");
+        }
+    }
+
+    //OnOpen is called when a player right clicks the entity
+    /** @param Player $player */
+    public function onOpen($player){
+        $player->sendMessage(TextFormat::AQUA . "The Form Just Opened!");
+    }
+
+
+    //On close is called when a player hits the X at the top right of the form to close it without interacting with any buttons
+    /** @param Player $player */
+    public function onClose($player){
+        $player->sendMessage(TextFormat::AQUA . "You Closed The Form???");
     }
 
 }
-```
-**All these methods are used in the constructor**
-
-You can set the content of the entity by adding:
-```php
-/** @var string $content */
-$form->setContent($title);
+//You can then link your form with any entity by doing
+/** @var Entity $entity */
+EntityFormHandler::linkWithEntity(new MyFormClass(), $entity);
 ```
 
-You can add a button to you form by Adding the folling code in your constructor but make sure to add `use Scarce\EntityForm\Button;` to your use statements! The addButton method takes two parameters, a Button instance, and a callable which will be called when its clicked, if $callable is null, the button press can be detected in the onButtonInteract method:
-```php
-/** @var string $name */
-/** @var ?callable $callable */
-$form->addButton(new Button($buttonname), $callable);
-```
+And if you want to get the form that an entity is linked with, do:
 
-**These methods are added outside the constructor**
 
-It is also possible to get the Entity thats Linked with your Form by using:
-```php
-$form->getEntity();
-```
-To spawn the NPC to a player use:
-```php
-/** @Player $player */
-$form->spawnTo(Player $player);
-```
-You can also spawn the entity to all players by using
-```php
-$form->spawnToAll();
-```
-Handiling NpcForm Callables
-This will show an example of how to use the callable in the NpcForm class
-```php
-<?php
-use Scarce\NpcForm\NpcForm;
+``/** @var Entity $entity */``
+``EntityFormHandler::getFormFromEntity($entity);``\
+returns null if the form doesnt have a linked form
 
-public function sendNpcForm(Player $player){
-        $form = new NpcForm(function(Player $player, ?int $data){
-            //$data can be an integer, 0 is the first button, 1 is the second button etc...
-            if ($data === null){
-                return;
-            }
-            $player->sendMessage("$data");
-        }, $player->asPosition(), $player->yaw, $player->pitch);
 
-        $form->setTitle("Number Selector");
-        $form->setContent( "Chose a Button!");
-        $form->addButton("0");
-        $form->addButton("1");
-        $form->addButton("2");
-        $form->addButton("3");
-        $form->addButton("4");
-        $form->addButton("5");
-        //Sending The Form entity to only $player
-        $form->spawnTo($player);
-    }
-```
-To Do
-Help with any of the todo list objectives is accepted
 
--Save Npc Data on Server Reset[]\
--Find a way to force the client to interact with an entity[]
 
 
 
