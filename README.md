@@ -1,5 +1,4 @@
 # EntityForm
-Credit to GiantQuartz for the EntityLinking Idea!\
 **EntityForm is a PocketMine-MP plugin that allows plugins to create and managing Npc Forms!**
 
 ### Usage
@@ -104,6 +103,9 @@ And if you want to get the form that an entity is linked with, do:
 ``/** @var Entity $entity */``
 ``EntityFormHandler::getFormFromEntity($entity);``\
 returns null if the form doesnt have a linked form
+
+### Credits
+Credit to GiantQuartz for the EntityLinking Idea!\
 
 
 
