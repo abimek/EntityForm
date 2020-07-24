@@ -47,9 +47,9 @@ class MyFormClass extends EntityForm{
 
 }
 ```
-**All these methods are used in the constructor**\
+**All these methods are used in the constructor**
 
-You can aslo set the content of the entity by adding:
+You can set the content of the entity by adding:
 ```php
 /** @var string $content */
 $form->setContent($title);
@@ -62,8 +62,7 @@ You can add a button to you form by Adding the folling code in your constructor 
 $form->addButton(new Button($buttonname), $callable);
 ```
 
-**These methods are placed in the constructor**\
-
+**These methods are added outside the constructor**
 
 It is also possible to get the Entity thats Linked with your Form by using:
 ```php
