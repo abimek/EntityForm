@@ -1,42 +1,54 @@
-# NpcForm
-**NpcForm is a PocketMine-MP plugin that allows plugins to create and managing NpcForms!**
+# EntityForm
+**EntityForm is a PocketMine-MP plugin that allows plugins to create and managing Npc Forms!**
 
 ### Usage
-You'll first need to import the `Scarce\NpcForm\NpcForm` and `Scarce\NpcForm\NpcFormHandler` class. This and NpcFormHandler should be the only classes required to create and manage NpcForms.
+You'll first need to import the `Scarce\EntityForm\EntityForm` and `Scarce\EntityForm\EntityFormHandler` class. Those two classes should be the only classes required to create and manage NpcForms.
 ```php
 <?php
-use Scarce\NpcForm\NpcForm;
-use Scarce\NpcForm\NpcFormHandler;
+use Scarce\EntityForm\EntityForm;
+use Scarce\EntityForm\EntityFormHandler;
 ```
 **NOTE:** \
--You should register the NpcFormEventHandler so that callables work by using\
+-You should register the EntitycFormEventHandler so that callables work by using\
 ```php
 <?php
-use Scarce\NpcForm\NpcFormHandler;
+use Scarce\EntityForm\EntityFormHandler;
 /** @var Plugin $plugin */
-if (!NpcFormHandler::isRegistered()){
-    NpcFormHandler::register($plugin);
+if (!EntityFormHandler::isRegistered()){
+    EntityFormHandler::register($plugin);
 }
 ```
 -For the player to be able to see the form, they have to right-click on the NPC Entity. \
--NPC Entities despawn on server restart since their form data isn't saved after server restart. You can make them save by setting the form entity to save with chunk by doing `$form->getEntity()->setCanSaveWithChunk(true)`
 
-**Creating a NpcForm Instance**\
-Creating a NpcForm Instance is relatively simple and is similar to creating a FormAPI form.
-You first have to instantiate a NpcForm`$form = new NpcForm()`The NpcForm takes two required parameteres and two non-required parameter `$form = new NpcForm(Callable $callable, Position $position, $yaw = 90, $pitch = 0)`
-The callable paramter takes a player object and an integer paramenter which will be null if no response is given
+**Creating an EntityForm**\
+Creating a EntityForm is relatively simple.
+You first need to make your own class that extends `Scarce\EntityForm\EntityForm`, in this Example, that class will be called `MyFormClass`!. Once you've done that, add the add your constructor by adding the magic function `__construct`. Make sure to not add any parameters to your constructor!\
+Once youve made your constructor, add your parent constructor in the constructor method by adding `parent::__construct($title, false, false);\
+The first parameter of the parent constructor should be the title of your form, this can always be changed latter on in the constructor.\
+The second parameter of the parent constructor is wether the entity should be damageable, it is recommended that you keep it false because it was incorperated because entity forms dont have damage animations but still can be damaged\
+The third and final parameter of the parent constructor is wether the form data like buttons should not be kept after server restart. This field is also recommended to be false because it was also built in to fix the bug that happed where form data gets destroyed on server restart!
 ```php
 <?php
-/** @var Position $position */
-/** @var string $title */
-//$position is where the NpcEntity will spawn
-$form = new NpcForm(function(Player $player, ?int $data), $position, $yaw, $pitch);
+
+use Scarce\EntityForm\EntityForm;
+
+class MyFormClass extends EntityForm{
+
+}
 ```
+
+when creating the class, make sure to add the magic function `__construct`. 
+:
+```php
+public function __construc
+```
+
 To set the title of the form(and the NpcEntity) use:
 ```php
 /** @var string $title */
-$form->setTitle($title);
+$this->setTitle($title);
 ```
+
 You can aslo set the content of the NpcForm by using
 ```php
 /** @var string $content */
