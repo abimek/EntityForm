@@ -25,11 +25,11 @@ Creating a EntityForm is relatively simple.
 You first need to make your own class that extends `Scarce\EntityForm\EntityForm`, in this Example, that class will be called `MyFormClass`! Once you've done that, add the add your constructor by adding the magic function `__construct`. Make sure to not add any parameters in your constructor!\
 Once youve made your constructor, add your parent constructor inside your constructor method by adding `parent::__construct($title, false, false);\
 
-The first parameter of the parent constructor should be the title of your form, this can always be changed latter on in the constructor.\
+### The first parameter of the parent constructor should be the title of your form, this can always be changed latter on in the constructor.
 
-The second parameter of the parent constructor is wether the entity should be damageable, it is recommended that you keep it false because it was incorperated because entity forms dont have damage animations but still can be damaged\
+### The second parameter of the parent constructor is wether the entity should be damageable, it is recommended that you keep it false because it was incorperated because entity forms dont have damage animations but still can be damaged\
 
-The third and final parameter of the parent constructor is wether the form data like buttons should not be kept after server restart. This field is also recommended to be false because it was also built in to fix the bug that happed where form data gets destroyed on server restart!
+### The third and final parameter of the parent constructor is wether the form data like buttons should not be kept after server restart. This field is also recommended to be false because it was also built in to fix the bug that happed where form data gets destroyed on server restart!
 ```php
 <?php
 
