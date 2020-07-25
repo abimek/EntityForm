@@ -35,7 +35,7 @@ class EntityFormEventHandler implements Listener{
             if (($entity = Server::getInstance()->findEntity($pk->entityRuntimeId)) === null){
                 return;
             }
-            if (($form = EntityFormHandler::getFormFromEntity($entity->getId())) === null){
+            if (($form = EntityFormHandler::getFormFromEntity($entity)) === null){
                 return;
             }
             switch ($pk->requestType){
@@ -58,7 +58,7 @@ class EntityFormEventHandler implements Listener{
                 if (($entity = Server::getInstance()->findEntity($entityid)) === null){
                     return;
                 }
-                if (($form = EntityFormHandler::getFormFromEntity($entity->getId())) === null){
+                if (($form = EntityFormHandler::getFormFromEntity($entity)) === null){
                     return;
                 }
                 if ($trdata->actionType === InventoryTransactionPacket::USE_ITEM_ON_ENTITY_ACTION_INTERACT){
