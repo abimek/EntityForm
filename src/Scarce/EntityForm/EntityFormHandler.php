@@ -40,7 +40,8 @@ class EntityFormHandler{
         self::$linked_entities[$entity->getId()] = $form;
     }
 
-    public static function getFormFromEntity(int $entityid): ?EntityForm{
+    public static function getFormFromEntity(Entity $entity): ?EntityForm{
+        $entityid = $entity->getId();
         if (isset(self::$linked_entities[$entityid])){
             return self::$linked_entities[$entityid];
         }
