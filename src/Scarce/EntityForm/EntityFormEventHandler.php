@@ -95,7 +95,7 @@ class EntityFormEventHandler implements Listener{
 
     public function onDamage(EntityDamageEvent $event){
         $entity = $event->getEntity();
-        if (($form = EntityFormHandler::getFormFromEntity($entity->getId())) === null){
+        if (($form = EntityFormHandler::getFormFromEntity($entity)) === null){
             return;
         }
         if ($form->isEntityDamageable() === true){
