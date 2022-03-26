@@ -1,6 +1,9 @@
 # EntityForm
 **EntityForm is a PocketMine-MP plugin that allows plugins to create and managing Npc Forms!**
 
+## Disclaimer
+**This project is nolonger being maintained**
+
 ### Usage
 You'll first need to import the `Scarce\EntityForm\EntityForm`, `Scarce\EntityForm\EntityFormHandler`, `Scarce\EntityForm\Button` and class. Those three classes should be the only classes required to create and manage NpcForms.
 ```php
